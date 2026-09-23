@@ -1,1 +1,31 @@
+<!-- 网页中不同时间节点的点评展示区域区域 -->
+<div class="bg-slate-800 p-6 rounded-xl border border-slate-700/50 space-y-4">
+    <h2 class="text-xl font-bold text-amber-400">📅 今日 AI 盘面点评流水线</h2>
 
+    <!-- 午盘点评卡片 -->
+    <div class="p-4 bg-slate-900/60 rounded-lg border-l-4 border-yellow-500">
+        <div class="flex justify-between items-center mb-1">
+            <span class="font-bold text-yellow-400">☀️ 午盘点评 (11:45)</span>
+            <span class="text-xs text-slate-500" id="time-noon">待生成...</span>
+        </div>
+        <p class="text-sm text-slate-300" id="content-noon">等待 11:45 定时任务更新...</p>
+    </div>
+
+    <!-- 收盘点评卡片 -->
+    <div class="p-4 bg-slate-900/60 rounded-lg border-l-4 border-red-500">
+        <div class="flex justify-between items-center mb-1">
+            <span class="font-bold text-red-400">🌆 收盘点评 (15:15)</span>
+            <span class="text-xs text-slate-500" id="time-close">待生成...</span>
+        </div>
+        <p class="text-sm text-slate-300" id="content-close">等待 15:15 定时任务更新...</p>
+    </div>
+
+    <!-- 深度复盘卡片 -->
+    <div class="p-4 bg-slate-900/60 rounded-lg border-l-4 border-indigo-500">
+        <div class="flex justify-between items-center mb-1">
+            <span class="font-bold text-indigo-400">🔍 盘后深度复盘 (16:30)</span>
+            <span class="text-xs text-slate-500" id="time-review">待生成...</span>
+        </div>
+        <p class="text-sm text-slate-300" id="content-review">等待 16:30 定时任务更新...</p>
+    </div>
+</div>
