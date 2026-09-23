@@ -48,35 +48,33 @@ jobs:
         run: |
           # 1. 强制设定时区为北京时间 (UTC+8)
           export TZ="Asia/Shanghai"
-          
-          # 2. 获取北京时间的准确日期和时间
           TODAY=$(date "+%Y-%m-%d")
           HOUR=$(date "+%H")
           MINUTE=$(date "+%M")
 
-          # 确保 data 归档目录存在
           mkdir -p data
-
           echo "当前北京时间: $TODAY $HOUR:$MINUTE"
 
-          # 3. 带日期归档逻辑的 Prompt
-          ARCHIVE_INSTRUCTION="注意：更新数据时，请同时覆盖跟目录的 data.json，并同步保存一份完整的当日数据到 data/$TODAY.json 文件中。"
+          ARCHIVE_INSTRUCTION="注意：更新数据时，请更新根目录的 data.json，并同步保存/更新一份完整数据到 data/$TODAY.json 文件中。请确保 JSON 输出格式严谨，包含 indices、summary_scores、market_stats、hot_sectors、reports 和 hourly_snapshots 字段。"
 
-          if [ "$HOUR" "==" "11" ] && [ "$MINUTE" "==" "45" ]; then
+          # 2. 判断触发来源与当前时间
+          # 如果是手动触发 (workflow_dispatch) 或踩中具体时间点
+          if [ "$HOUR" -ge 11 ] && [ "$HOUR" -lt 14 ]; then
             TYPE="noon"
-            PROMPT="今天是 $TODAY。请抓取今天午盘行情，评估综合/情绪/量比评分，撰写午盘深度点评，将结构化数据和点评更新至 data.json 中的 hourly_snapshots 和 reports.noon 节点。$ARCHIVE_INSTRUCTION"
-          elif [ "$HOUR" "==" "15" ] && [ "$MINUTE" "==" "15" ]; then
+            PROMPT="今天是 $TODAY。请抓取今天最新的 A 股大盘指数、成交量、涨跌家数与主线热点板块。请计算综合/情绪/量比评分，并撰写一段 150 字左右的午盘深度综合点评，更新至 data.json 中的 reports.noon 节点。$ARCHIVE_INSTRUCTION"
+          elif [ "$HOUR" -eq 14 ] || [ "$HOUR" -eq 15 ]; then
             TYPE="close"
-            PROMPT="抓取今天是 $TODAY 的收盘行情，更新全天评分指标，撰写收盘点评，更新 data.json 中的 hourly_snapshots 和 reports.close 节点。$ARCHIVE_INSTRUCTION"
-          elif [ "$HOUR" "==" "16" ] && [ "$MINUTE" "==" "30" ]; then
+            PROMPT="今天是 $TODAY。请抓取今天 A 股收盘行情全貌（三大指数、总成交额、涨跌分布）。更新全天评分指标，撰写一段 200 字左右的收盘深度点评，更新至 data.json 中的 reports.close 节点。$ARCHIVE_INSTRUCTION"
+          elif [ "$HOUR" -ge 16 ]; then
             TYPE="review"
-            PROMPT="抓取今天是 $TODAY 的龙虎榜与板块轮动，撰写盘后复盘策略，更新 data.json 中的 reports.review 节点。$ARCHIVE_INSTRUCTION"
+            PROMPT="今天是 $TODAY。请抓取今天 A 股全天龙虎榜、资金流向与板块轮动情况，撰写盘后复盘策略与后市展望（一段话），更新至 data.json 中的 reports.review 节点。$ARCHIVE_INSTRUCTION"
           else
-            TYPE="snapshot"
-            PROMPT="今天是 $TODAY。请抓取当前整点行情（时间：$TODAY $HOUR:00），计算综合评分、情绪评分、量比评分并总结一句话点评，插入到 data.json 的 hourly_snapshots 数组中。$ARCHIVE_INSTRUCTION"
+            # 早盘或非交易时段手动触发，默认生成全天综合复盘
+            TYPE="review"
+            PROMPT="今天是 $TODAY。请抓取最新的 A 股市场行情数据（三大指数、热点板块、量能变化），评估综合/情绪/量比评分，并在 reports.noon、reports.close 或 reports.review 中撰写一段 200 字深度点评。$ARCHIVE_INSTRUCTION"
           fi
 
-          # 4. 执行 Agent 任务
+          # 3. 运行 Agent 
           hermes -m "openrouter/free" -z "$PROMPT"
 
       - name: 提交并推送数据变更 (包含历史归档)
