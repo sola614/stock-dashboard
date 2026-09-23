@@ -1,4 +1,4 @@
-name: A股盘面AI智能诊断看板 (Gemini 2.5 Flash)
+name: A股盘面AI智能诊断看板 (Gemini 3.6 Flash)
 
 on:
   schedule:
@@ -25,13 +25,11 @@ jobs:
       - name: 检出仓库代码
         uses: actions/checkout@v4
 
-      # 1. 升级 Node.js 至最新 LTS (v22)
-      - name: 设置 Node.js 最新 LTS 环境
+      - name: 设置 Node.js 环境
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      # 2. 设置 Python 3.11 环境 (满足 hermes-agent >= 3.11 要求)
       - name: 设置 Python 3.11 环境
         uses: actions/setup-python@v5
         with:
@@ -39,14 +37,11 @@ jobs:
 
       - name: 安装 Hermes Agent & Financial Skill
         run: |
-          # 升级 pip 并安装 hermes-agent
           python -m pip install --upgrade pip
           pip install hermes-agent
-          
-          # 全局安装同花顺金融 API Skill
           npx skills add HiThink-Tech/Financial-API --skill hithink-finance -g --yes
 
-      - name: 运行 Hermes (基于 Gemini 2.5 Flash 生成分析)
+      - name: 运行 Hermes (基于 Gemini 3.6 Flash 生成分析)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           HITHINK_FINANCE_API_KEY: ${{ secrets.HITHINK_FINANCE_API_KEY }}
@@ -70,8 +65,8 @@ jobs:
             PROMPT="抓取当前整点行情，计算综合评分、情绪评分、量比评分并总结一句话点评，插入到 data.json 的 hourly_snapshots 数组中。"
           fi
 
-          # 3. 使用 -m 指定 Gemini 模型，使用 -z 传入 Prompt 进行单次非交互运行
-          hermes -m "gemini-2.5-flash" -z "$PROMPT"
+          # 3. 指定最新 gemini-3.6-flash 模型并运行
+          hermes -m "gemini-3.6-flash" -z "$PROMPT"
 
       - name: 提交并推送 data.json 变更
         run: |
