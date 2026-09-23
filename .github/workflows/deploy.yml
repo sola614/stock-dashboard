@@ -41,7 +41,7 @@ jobs:
           pip install hermes-agent
           npx skills add HiThink-Tech/Financial-API --skill hithink-finance -g --yes
 
-      - name: 运行 Hermes
+      - name: 运行 Hermes (基于大模型生成盘面分析与点评)
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           HITHINK_FINANCE_API_KEY: ${{ secrets.HITHINK_FINANCE_API_KEY }}
@@ -55,26 +55,23 @@ jobs:
           mkdir -p data
           echo "当前北京时间: $TODAY $HOUR:$MINUTE"
 
-          ARCHIVE_INSTRUCTION="注意：更新数据时，请更新根目录的 data.json，并同步保存/更新一份完整数据到 data/$TODAY.json 文件中。请确保 JSON 输出格式严谨，包含 indices、summary_scores、market_stats、hot_sectors、reports 和 hourly_snapshots 字段。"
+          # 2. 极其严格的 Prompt：要求必须调用技能查询实时数据，绝不能捏造数据！
+          STRICT_REQUIREMENT="【必须执行】：你必须使用 hithink-finance 技能（Tool）去实时查询今日（$TODAY）真实的 A 股大盘行情（包括上证指数、深证成指、创业板指最新点位和涨跌幅，上涨/下跌家数，两市成交额，以及领涨的热点板块）。绝对禁止使用任何之前的历史示例数据（如 3045.20 等假数据）！如果获取不到真实数据，请直接明确报错或提示数据获取失败。"
 
-          # 2. 判断触发来源与当前时间
-          # 如果是手动触发 (workflow_dispatch) 或踩中具体时间点
+          ARCHIVE_INSTRUCTION="注意：拿到【真实行情数据】后，请更新根目录的 data.json，并同步保存/更新一份完整数据到 data/$TODAY.json 文件中。格式需包含 indices (sh_index, sh_change, sz_index, sz_change, cy_index, cy_change)、summary_scores、market_stats (up_count, down_count, total_volume)、hot_sectors、reports 和 hourly_snapshots 字段。"
+
           if [ "$HOUR" -ge 11 ] && [ "$HOUR" -lt 14 ]; then
             TYPE="noon"
-            PROMPT="今天是 $TODAY。请抓取今天最新的 A 股大盘指数、成交量、涨跌家数与主线热点板块。请计算综合/情绪/量比评分，并撰写一段 150 字左右的午盘深度综合点评，更新至 data.json 中的 reports.noon 节点。$ARCHIVE_INSTRUCTION"
+            PROMPT="$STRICT_REQUIREMENT\n今天日期是 $TODAY。请查询最新的午盘数据，计算综合/情绪/量比评分，并撰写一段 150 字左右的午盘深度综合点评，更新至 data.json 中的 reports.noon 节点。$ARCHIVE_INSTRUCTION"
           elif [ "$HOUR" -eq 14 ] || [ "$HOUR" -eq 15 ]; then
             TYPE="close"
-            PROMPT="今天是 $TODAY。请抓取今天 A 股收盘行情全貌（三大指数、总成交额、涨跌分布）。更新全天评分指标，撰写一段 200 字左右的收盘深度点评，更新至 data.json 中的 reports.close 节点。$ARCHIVE_INSTRUCTION"
-          elif [ "$HOUR" -ge 16 ]; then
-            TYPE="review"
-            PROMPT="今天是 $TODAY。请抓取今天 A 股全天龙虎榜、资金流向与板块轮动情况，撰写盘后复盘策略与后市展望（一段话），更新至 data.json 中的 reports.review 节点。$ARCHIVE_INSTRUCTION"
+            PROMPT="$STRICT_REQUIREMENT\n今天日期是 $TODAY。请查询收盘行情全貌。更新全天评分指标，撰写一段 200 字左右的收盘深度点评，更新至 data.json 中的 reports.close 节点。$ARCHIVE_INSTRUCTION"
           else
-            # 早盘或非交易时段手动触发，默认生成全天综合复盘
             TYPE="review"
-            PROMPT="今天是 $TODAY。请抓取最新的 A 股市场行情数据（三大指数、热点板块、量能变化），评估综合/情绪/量比评分，并在 reports.noon、reports.close 或 reports.review 中撰写一段 200 字深度点评。$ARCHIVE_INSTRUCTION"
+            PROMPT="$STRICT_REQUIREMENT\n今天日期是 $TODAY。请查询全天行情与板块轮动情况，撰写盘后复盘策略与后市展望（一段话），更新至 reports.review 节点。$ARCHIVE_INSTRUCTION"
           fi
 
-          # 3. 运行 Agent 
+          # 3. 指定支持 Tool Calling 的 Gemini 2.0 Flash 免费模型
           hermes -m "openrouter/free" -z "$PROMPT"
 
       - name: 提交并推送数据变更 (包含历史归档)
