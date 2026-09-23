@@ -1,31 +1,131 @@
-<!-- 网页中不同时间节点的点评展示区域区域 -->
-<div class="bg-slate-800 p-6 rounded-xl border border-slate-700/50 space-y-4">
-    <h2 class="text-xl font-bold text-amber-400">📅 今日 AI 盘面点评流水线</h2>
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A股 AI 盘面智能诊断看板</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8">
+  <div class="max-w-6xl mx-auto space-y-6">
+    
+    <!-- 头部 Header -->
+    <header class="flex justify-between items-center border-b border-slate-800 pb-4">
+      <div>
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-amber-400 to-rose-500 bg-clip-text text-transparent">
+          A股 AI 盘面智能诊断看板
+        </h1>
+        <p class="text-xs text-slate-400 mt-1">引擎：Hermes Agent + Gemini 2.5 Flash</p>
+      </div>
+      <div class="text-right">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-900/50 text-emerald-400 border border-emerald-700/50">
+          ● 自动更新中
+        </span>
+        <p id="update-time" class="text-xs text-slate-500 mt-1">更新时间: --</p>
+      </div>
+    </header>
 
-    <!-- 午盘点评卡片 -->
-    <div class="p-4 bg-slate-900/60 rounded-lg border-l-4 border-yellow-500">
-        <div class="flex justify-between items-center mb-1">
-            <span class="font-bold text-yellow-400">☀️ 午盘点评 (11:45)</span>
-            <span class="text-xs text-slate-500" id="time-noon">待生成...</span>
-        </div>
-        <p class="text-sm text-slate-300" id="content-noon">等待 11:45 定时任务更新...</p>
-    </div>
+    <!-- 模块一：整点盘面指标与一句话点评表 -->
+    <section class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl">
+      <h2 class="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
+        ⏱️ 今日整点盘面实时快照
+      </h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-slate-800/60 text-slate-400 border-b border-slate-700">
+            <tr>
+              <th class="p-3">时间</th>
+              <th class="p-3">上证指数</th>
+              <th class="p-3">成交量</th>
+              <th class="p-3">综合评分</th>
+              <th class="p-3">情绪评分</th>
+              <th class="p-3">量比评分</th>
+              <th class="p-3 w-1/3">AI 一句话点评</th>
+            </tr>
+          </thead>
+          <tbody id="hourly-table-body" class="divide-y divide-slate-800/50">
+            <!-- 由 JavaScript 动态读取 data.json 渲染 -->
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-    <!-- 收盘点评卡片 -->
-    <div class="p-4 bg-slate-900/60 rounded-lg border-l-4 border-red-500">
-        <div class="flex justify-between items-center mb-1">
-            <span class="font-bold text-red-400">🌆 收盘点评 (15:15)</span>
-            <span class="text-xs text-slate-500" id="time-close">待生成...</span>
-        </div>
-        <p class="text-sm text-slate-300" id="content-close">等待 15:15 定时任务更新...</p>
-    </div>
+    <!-- 模块二：深度点评 Tab 切换模块 -->
+    <section class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl">
+      <div class="border-b border-slate-800 flex space-x-4 mb-4">
+        <button onclick="switchTab('noon')" id="tab-noon" class="tab-btn py-2 px-4 border-b-2 border-amber-400 text-amber-400 font-bold transition">
+          ☀️ 午盘点评 (11:45)
+        </button>
+        <button onclick="switchTab('close')" id="tab-close" class="tab-btn py-2 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-bold transition">
+          🌆 收盘点评 (15:15)
+        </button>
+        <button onclick="switchTab('review')" id="tab-review" class="tab-btn py-2 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-bold transition">
+          🔍 盘后复盘 (16:30)
+        </button>
+      </div>
 
-    <!-- 深度复盘卡片 -->
-    <div class="p-4 bg-slate-900/60 rounded-lg border-l-4 border-indigo-500">
-        <div class="flex justify-between items-center mb-1">
-            <span class="font-bold text-indigo-400">🔍 盘后深度复盘 (16:30)</span>
-            <span class="text-xs text-slate-500" id="time-review">待生成...</span>
-        </div>
-        <p class="text-sm text-slate-300" id="content-review">等待 16:30 定时任务更新...</p>
-    </div>
-</div>
+      <div id="report-container" class="bg-slate-950/60 p-5 rounded-lg border border-slate-800/80 leading-relaxed text-slate-300 min-h-[160px]">
+        加载中...
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    let globalData = null;
+
+    async function loadData() {
+      try {
+        const res = await fetch('./data.json?t=' + Date.now());
+        globalData = await res.json();
+        
+        document.getElementById('update-time').innerText = '更新时间: ' + globalData.last_updated;
+        
+        // 渲染整点表格
+        const tbody = document.getElementById('hourly-table-body');
+        tbody.innerHTML = globalData.hourly_snapshots.map(item => `
+          <tr class="hover:bg-slate-800/30 transition">
+            <td class="p-3 font-semibold text-amber-300">${item.time}</td>
+            <td class="p-3">${item.index_sh}</td>
+            <td class="p-3">${item.volume}</td>
+            <td class="p-3"><span class="px-2 py-1 rounded bg-blue-900/40 text-blue-400 font-bold">${item.score_composite}</span></td>
+            <td class="p-3"><span class="px-2 py-1 rounded bg-rose-900/40 text-rose-400 font-bold">${item.score_sentiment}</span></td>
+            <td class="p-3"><span class="px-2 py-1 rounded bg-emerald-900/40 text-emerald-400 font-bold">${item.score_volume}</span></td>
+            <td class="p-3 text-slate-300">${item.summary}</td>
+          </tr>
+        `).join('');
+
+        // 默认显示午盘 Tab
+        switchTab('noon');
+      } catch (e) {
+        console.error("加载数据失败", e);
+      }
+    }
+
+    function switchTab(type) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('border-amber-400', 'text-amber-400');
+        btn.classList.add('border-transparent', 'text-slate-400');
+      });
+
+      const activeBtn = document.getElementById(`tab-${type}`);
+      activeBtn.classList.add('border-amber-400', 'text-amber-400');
+      activeBtn.classList.remove('border-transparent', 'text-slate-400');
+
+      const report = globalData?.reports?.[type];
+      const container = document.getElementById('report-container');
+
+      if (report && report.content) {
+        container.innerHTML = `
+          <h3 class="text-lg font-bold text-slate-100 mb-2">${report.title}</h3>
+          <p class="whitespace-pre-line text-sm text-slate-300">${report.content}</p>
+        `;
+      } else {
+        container.innerHTML = `<p class="text-slate-500 italic">该时段点评尚未生成，请在对应时间后查看...</p>`;
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
