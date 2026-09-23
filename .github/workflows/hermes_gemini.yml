@@ -51,14 +51,11 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           HITHINK_FINANCE_API_KEY: ${{ secrets.HITHINK_FINANCE_API_KEY }}
         run: |
-          # 1. 显式指定 Hermes 使用 Gemini 2.5 Flash 模型
-          hermes model set google/gemini-2.5-flash || true
-
-          # 2. 获取当前 UTC 时间节点
+          # 1. 获取当前 UTC 时间节点
           HOUR=$(date -u +%H)
           MINUTE=$(date -u +%M)
 
-          # 3. 根据时间类型触发不同 Prompt
+          # 2. 根据时间类型触发不同 Prompt
           if [ "$HOUR" "==" "03" ] && [ "$MINUTE" "==" "45" ]; then
             TYPE="noon"
             PROMPT="抓取午盘行情，评估综合/情绪/量比评分，撰写午盘深度点评，将结构化数据和点评更新至 data.json 中的 hourly_snapshots 和 reports.noon 节点。"
@@ -73,8 +70,8 @@ jobs:
             PROMPT="抓取当前整点行情，计算综合评分、情绪评分、量比评分并总结一句话点评，插入到 data.json 的 hourly_snapshots 数组中。"
           fi
 
-          # 4. 执行 Agent 任务
-          hermes run "$PROMPT"
+          # 3. 使用 -m 指定 Gemini 模型，使用 -z 传入 Prompt 进行单次非交互运行
+          hermes -m "gemini-2.5-flash" -z "$PROMPT"
 
       - name: 提交并推送 data.json 变更
         run: |
