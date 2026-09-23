@@ -77,29 +77,27 @@
 
     <!-- 3. 核心指标与相关市场数据评分区 -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <!-- 综合评分 -->
       <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-5 backdrop-blur flex flex-col justify-between">
         <div>
           <div class="text-slate-400 text-sm mb-1 flex justify-between">
-            <span>大盘综合评分</span>
+            <span>大盘综合评分 / 态势</span>
             <i class="fa-solid fa-gauge text-blue-400"></i>
           </div>
-          <div id="score-overall" class="text-3xl font-extrabold text-blue-400">--</div>
+          <div id="score-overall" class="text-2xl font-extrabold text-blue-400 mt-2">--</div>
         </div>
         <div class="mt-4 text-xs text-slate-400 border-t border-slate-700/50 pt-2 flex justify-between">
-          <span>市场拟合度:</span>
+          <span>状态描述:</span>
           <span id="stat-market-fit" class="text-slate-200">--</span>
         </div>
       </div>
 
-      <!-- 情绪评分与涨跌家数 -->
       <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-5 backdrop-blur flex flex-col justify-between">
         <div>
           <div class="text-slate-400 text-sm mb-1 flex justify-between">
             <span>市场情绪指数</span>
             <i class="fa-solid fa-fire text-amber-400"></i>
           </div>
-          <div id="score-sentiment" class="text-3xl font-extrabold text-amber-400">--</div>
+          <div id="score-sentiment" class="text-sm font-medium text-amber-300 leading-snug mt-2">--</div>
         </div>
         <div class="mt-4 text-xs text-slate-400 border-t border-slate-700/50 pt-2 flex justify-between">
           <span>涨/跌家数:</span>
@@ -107,18 +105,17 @@
         </div>
       </div>
 
-      <!-- 量比评分与成交额 -->
       <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-5 backdrop-blur flex flex-col justify-between">
         <div>
           <div class="text-slate-400 text-sm mb-1 flex justify-between">
             <span>成交量比评分</span>
             <i class="fa-solid fa-chart-simple text-emerald-400"></i>
           </div>
-          <div id="score-volume" class="text-3xl font-extrabold text-emerald-400">--</div>
+          <div id="score-volume" class="text-sm font-medium text-emerald-300 leading-snug mt-2">--</div>
         </div>
         <div class="mt-4 text-xs text-slate-400 border-t border-slate-700/50 pt-2 flex justify-between">
           <span>两市成交额:</span>
-          <span id="stat-total-volume" class="text-slate-200">-- 亿</span>
+          <span id="stat-total-volume" class="text-slate-200">--</span>
         </div>
       </div>
     </section>
@@ -133,7 +130,7 @@
 
       <!-- 热点板块标签区 -->
       <div class="mb-4 flex flex-wrap items-center gap-2">
-        <span class="text-xs text-slate-400"><i class="fa-solid fa-fire-flame-curved text-red-400 mr-1"></i>当前热点板块:</span>
+        <span class="text-xs text-slate-400"><i class="fa-solid fa-fire-flame-curved text-red-400 mr-1"></i>监控热点/主线板块:</span>
         <div id="hot-sectors" class="flex flex-wrap gap-2">
           <span class="text-xs bg-slate-700 text-slate-400 px-2.5 py-1 rounded-full">无热点数据</span>
         </div>
@@ -159,11 +156,11 @@
         <table class="w-full text-left text-sm text-slate-300">
           <thead class="bg-slate-700/50 text-slate-400 uppercase text-xs">
             <tr>
-              <th class="p-3">时间</th>
-              <th class="p-3">综合/情绪/量比</th>
-              <th class="p-3">当前指数</th>
-              <th class="p-3">热点板块</th>
-              <th class="p-3">一段话综合点评</th>
+              <th class="p-3">时间 / 标签</th>
+              <th class="p-3">上证指数</th>
+              <th class="p-3">深证成指</th>
+              <th class="p-3">创业板指</th>
+              <th class="p-3">备注说明</th>
             </tr>
           </thead>
           <tbody id="snapshots-table-body" class="divide-y divide-slate-700/50">
@@ -177,7 +174,7 @@
 
   <script>
     let currentData = null;
-    let activeTab = 'noon';
+    let activeTab = 'review'; // 默认优先展示收盘复盘
 
     document.addEventListener('DOMContentLoaded', () => {
       const dateInput = document.getElementById('date-select');
@@ -215,7 +212,7 @@
         renderSnapshots();
 
       } catch (err) {
-        console.warn(err);
+        console.error(err);
         banner.className = 'mb-6 p-4 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-300 flex items-center justify-between';
         msg.textContent = `提示：${selectedDate ? selectedDate + ' 暂无归档数据' : '数据加载失败或尚未生成'}`;
         banner.classList.remove('hidden');
@@ -223,12 +220,27 @@
       }
     }
 
+    // 格式化数字和百分比字符串 (安全容错)
+    function formatChange(val) {
+      if (val === null || val === undefined || val === '--') return { text: '--', isUp: false };
+      
+      let num = parseFloat(val);
+      if (isNaN(num)) {
+        let str = String(val);
+        return { text: str, isUp: !str.startsWith('-') };
+      }
+
+      let isUp = num >= 0;
+      let text = (isUp ? '+' : '') + num.toFixed(2) + '%';
+      return { text, isUp };
+    }
+
     // 1. 渲染大盘指数
     function renderMarketIndices() {
       if (!currentData || !currentData.indices) {
-        setIndexDisplay('sh', '--', '--');
-        setIndexDisplay('sz', '--', '--');
-        setIndexDisplay('cy', '--', '--');
+        setIndexDisplay('sh', '--', null);
+        setIndexDisplay('sz', '--', null);
+        setIndexDisplay('cy', '--', null);
         return;
       }
       setIndexDisplay('sh', currentData.indices.sh_index, currentData.indices.sh_change);
@@ -236,18 +248,20 @@
       setIndexDisplay('cy', currentData.indices.cy_index, currentData.indices.cy_change);
     }
 
-    function setIndexDisplay(prefix, val, change) {
+    function setIndexDisplay(prefix, val, changeRaw) {
       const valEl = document.getElementById(`${prefix}-index`);
       const changeEl = document.getElementById(`${prefix}-change`);
       
-      valEl.textContent = val ?? '--';
-      if (change && change !== '--') {
-        const isUp = !change.startsWith('-');
-        changeEl.textContent = (isUp ? '+' : '') + change;
+      let numVal = parseFloat(val);
+      valEl.textContent = !isNaN(numVal) ? numVal.toFixed(2) : (val ?? '--');
+
+      const { text, isUp } = formatChange(changeRaw);
+      changeEl.textContent = text;
+
+      if (changeRaw !== null && changeRaw !== undefined) {
         changeEl.className = `text-right font-mono font-semibold text-lg ${isUp ? 'text-red-400' : 'text-emerald-400'}`;
         valEl.className = `text-2xl font-bold font-mono mt-1 ${isUp ? 'text-red-400' : 'text-emerald-400'}`;
       } else {
-        changeEl.textContent = '--';
         changeEl.className = 'text-right font-mono font-semibold text-lg text-slate-400';
         valEl.className = 'text-2xl font-bold font-mono mt-1 text-slate-100';
       }
@@ -260,15 +274,25 @@
       document.getElementById('score-sentiment').textContent = currentData.summary_scores?.sentiment ?? '--';
       document.getElementById('score-volume').textContent = currentData.summary_scores?.volume ?? '--';
 
-      // 底层支撑数据
       document.getElementById('stat-market-fit').textContent = currentData.market_stats?.status_desc ?? '正常';
-      document.getElementById('stat-up-down').textContent = 
-        `${currentData.market_stats?.up_count ?? '--'} 涨 / ${currentData.market_stats?.down_count ?? '--'} 跌`;
-      document.getElementById('stat-total-volume').textContent = 
-        currentData.market_stats?.total_volume ? `${currentData.market_stats.total_volume} 亿` : '--';
+      
+      const up = currentData.market_stats?.up_count;
+      const down = currentData.market_stats?.down_count;
+      document.getElementById('stat-up-down').textContent = (up !== null && down !== null) ? `${up} 涨 / ${down} 跌` : '未暴露数据';
+
+      // 格式化成交额 (如 1764976410000 转换为 1.76 万亿)
+      let totVol = currentData.market_stats?.total_volume;
+      if (typeof totVol === 'number') {
+        if (totVol > 1e12) {
+          totVol = (totVol / 1e12).toFixed(2) + ' 万亿元';
+        } else if (totVol > 1e8) {
+          totVol = (totVol / 1e8).toFixed(2) + ' 亿元';
+        }
+      }
+      document.getElementById('stat-total-volume').textContent = totVol || '--';
     }
 
-    // 2. 渲染深度点评（热点 + 一段话综合总结）
+    // 2. 渲染深度点评与热点板块对象列表
     function renderReport() {
       const hotContainer = document.getElementById('hot-sectors');
       const paragraphContainer = document.getElementById('report-summary-paragraph');
@@ -279,14 +303,22 @@
         return;
       }
 
-      // 渲染当前热点板块标签
+      // 解析同花顺返回的热点板块列表 (对象数组或纯字符串数组)
       const sectors = currentData.hot_sectors || [];
       if (sectors.length > 0) {
-        hotContainer.innerHTML = sectors.map(sec => 
-          `<span class="text-xs bg-red-500/20 text-red-300 border border-red-500/30 px-2.5 py-1 rounded-full font-medium">${sec}</span>`
-        ).join('');
+        hotContainer.innerHTML = sectors.map(sec => {
+          if (typeof sec === 'object' && sec !== null) {
+            let chg = parseFloat(sec.chg_pct);
+            let isUp = chg >= 0;
+            let bgClass = isUp ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+            return `<span class="text-xs border px-2.5 py-1 rounded-full font-medium ${bgClass}">
+              ${sec.name} ${!isNaN(chg) ? (isUp ? '+' : '') + chg.toFixed(2) + '%' : ''}
+            </span>`;
+          }
+          return `<span class="text-xs bg-red-500/20 text-red-300 border border-red-500/30 px-2.5 py-1 rounded-full font-medium">${sec}</span>`;
+        }).join('');
       } else {
-        hotContainer.innerHTML = '<span class="text-xs bg-slate-700 text-slate-400 px-2.5 py-1 rounded-full">轮动分化 / 无明确主线</span>';
+        hotContainer.innerHTML = '<span class="text-xs bg-slate-700 text-slate-400 px-2.5 py-1 rounded-full">板块轮动分化</span>';
       }
 
       // 渲染一段话深度综合点评
@@ -314,24 +346,23 @@
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-slate-700/30 transition';
         tr.innerHTML = `
-          <td class="p-3 font-mono text-slate-300">${item.time || '--'}</td>
-          <td class="p-3 font-mono">
-            <span class="text-blue-400">${item.overall_score ?? '-'}</span> / 
-            <span class="text-amber-400">${item.sentiment_score ?? '-'}</span> / 
-            <span class="text-emerald-400">${item.volume_score ?? '-'}</span>
+          <td class="p-3 font-mono text-slate-300">
+            <span class="font-bold">${item.time || '--'}</span> 
+            ${item.label ? `<span class="text-xs bg-slate-700 text-slate-400 px-1.5 py-0.5 rounded ml-1">${item.label}</span>` : ''}
           </td>
-          <td class="p-3 font-mono text-slate-200">${item.sh_index_snapshot || '--'}</td>
-          <td class="p-3 text-xs text-red-300">${(item.hot_sectors || []).join(', ') || '无'}</td>
-          <td class="p-3 text-slate-300 leading-relaxed">${item.comment_paragraph || item.comment || '--'}</td>
+          <td class="p-3 font-mono text-slate-200">${item.sh ?? '--'}</td>
+          <td class="p-3 font-mono text-slate-200">${item.sz ?? '--'}</td>
+          <td class="p-3 font-mono text-slate-200">${item.cy ?? '--'}</td>
+          <td class="p-3 text-slate-300 text-xs">${item.note || item.comment || '--'}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
     function resetDisplay() {
-      setIndexDisplay('sh', '--', '--');
-      setIndexDisplay('sz', '--', '--');
-      setIndexDisplay('cy', '--', '--');
+      setIndexDisplay('sh', '--', null);
+      setIndexDisplay('sz', '--', null);
+      setIndexDisplay('cy', '--', null);
       document.getElementById('score-overall').textContent = '--';
       document.getElementById('score-sentiment').textContent = '--';
       document.getElementById('score-volume').textContent = '--';
