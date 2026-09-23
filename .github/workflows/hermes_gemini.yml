@@ -34,6 +34,7 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/hermes-agent/hermes-agent/main/install.sh | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+          echo "$HOME/.hermes/bin" >> $GITHUB_PATH
           npx skills add HiThink-Tech/Financial-API --skill hithink-finance -g --yes
 
       - name: 运行 Hermes (基于 Gemini 2.5 Flash 生成分析)
@@ -41,6 +42,9 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           HITHINK_FINANCE_API_KEY: ${{ secrets.HITHINK_FINANCE_API_KEY }}
         run: |
+          # 确保把 ~/.local/bin 和 ~/.hermes/bin 加入当前步骤的 PATH 环境变量
+          export PATH="$HOME/.local/bin:$HOME/.hermes/bin:$PATH"
+
           # 1. 显式指定 Hermes 使用 Gemini 2.5 Flash 模型
           hermes model set google/gemini-2.5-flash
 
@@ -55,7 +59,7 @@ jobs:
           elif [ "$HOUR" "==" "07" ] && [ "$MINUTE" "==" "15" ]; then
             TYPE="close"
             PROMPT="抓取收盘行情，更新全天评分指标，撰写收盘点评，更新 data.json 中的 hourly_snapshots 和 reports.close 节点。"
-          elif [ "$HOUR" "==" "08" ] && [ "$MINUTE" "==" "16" ]; then
+          elif [ "$HOUR" "==" "08" ] && [ "$MINUTE" "==" "30" ]; then
             TYPE="review"
             PROMPT="抓取龙虎榜与板块轮动，撰写盘后复盘策略，更新 data.json 中的 reports.review 节点。"
           else
