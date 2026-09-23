@@ -30,11 +30,18 @@ jobs:
         with:
           node-version: '20'
 
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
       - name: 安装 Hermes Agent & Financial Skill
         run: |
-          curl -fsSL https://raw.githubusercontent.com/hermes-agent/hermes-agent/main/install.sh | bash
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          echo "$HOME/.hermes/bin" >> $GITHUB_PATH
+          # 1. 使用 pip 强制安装 hermes-agent，确保全局可直接调用 hermes 命令
+          python -m pip install --upgrade pip
+          pip install hermes-agent || pip install --upgrade hermes-agent
+          
+          # 2. 全局安装同花顺金融 API Skill
           npx skills add HiThink-Tech/Financial-API --skill hithink-finance -g --yes
 
       - name: 运行 Hermes (基于 Gemini 2.5 Flash 生成分析)
@@ -42,11 +49,8 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           HITHINK_FINANCE_API_KEY: ${{ secrets.HITHINK_FINANCE_API_KEY }}
         run: |
-          # 确保把 ~/.local/bin 和 ~/.hermes/bin 加入当前步骤的 PATH 环境变量
-          export PATH="$HOME/.local/bin:$HOME/.hermes/bin:$PATH"
-
-          # 1. 显式指定 Hermes 使用 Gemini 2.5 Flash 模型
-          hermes model set google/gemini-2.5-flash
+          # 1. 确认 hermes 安装路径并配置模型
+          which hermes || python -m hermes model set google/gemini-2.5-flash
 
           # 2. 获取当前 UTC 时间节点
           HOUR=$(date -u +%H)
@@ -67,8 +71,12 @@ jobs:
             PROMPT="抓取当前整点行情，计算综合评分、情绪评分、量比评分并总结一句话点评，插入到 data.json 的 hourly_snapshots 数组中。"
           fi
 
-          # 4. 执行 Agent 任务
-          hermes run "$PROMPT"
+          # 4. 执行 Agent 任务 (优先直接调 hermes 命令，若未放入 bin 则通过 python -m 调起)
+          if command -v hermes &> /dev/null; then
+            hermes run "$PROMPT"
+          else
+            python -m hermes run "$PROMPT"
+          fi
 
       - name: 提交并推送 data.json 变更
         run: |
