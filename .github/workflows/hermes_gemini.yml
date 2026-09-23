@@ -65,8 +65,15 @@ jobs:
             PROMPT="抓取当前整点行情，计算综合评分、情绪评分、量比评分并总结一句话点评，插入到 data.json 的 hourly_snapshots 数组中。"
           fi
 
-          # 3. 指定最新 gemini-3.6-flash 模型并运行
-          hermes -m "gemini-3.6-flash" -z "$PROMPT"
+          # 3. 如果遭遇限流，最多重试 3 次，每次间隔 10 秒
+          n=0
+          until [ "$n" -ge 3 ]
+          do
+             hermes -m "gemini-3.6-flash" -z "$PROMPT" && break
+             n=$((n+1))
+             echo "遭遇 API 限流，等待 10 秒后重试 ($n/3)..."
+             sleep 10
+          done
 
       - name: 提交并推送 data.json 变更
         run: |
