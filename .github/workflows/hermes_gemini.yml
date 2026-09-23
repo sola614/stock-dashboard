@@ -63,7 +63,7 @@ jobs:
           fi
 
           # 3. 通过 OpenRouter 调用免费模型
-          hermes -m "openrouter/z-ai/glm-5.2:free" -z "$PROMPT"
+          hermes -m "openrouter/free" -z "$PROMPT"
 
       - name: 提交并推送 data.json 变更
         run: |
