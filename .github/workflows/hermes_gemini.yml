@@ -1,14 +1,10 @@
-name: A股盘面AI智能诊断看板 (Gemini 3.6 Flash)
+name: A股盘面AI智能诊断看板 (Ling 3.0 Flash Fin)
 
 on:
   schedule:
-    # 北京时间交易日 10:00, 11:00, 12:00, 14:00, 15:00 (整点数据快照)
     - cron: '0 2,3,4,6,7 * * 1-5'
-    # 北京时间 11:45 (午盘点评)
     - cron: '45 3 * * 1-5'
-    # 北京时间 15:15 (收盘点评)
     - cron: '15 7 * * 1-5'
-    # 北京时间 16:30 (复盘点评)
     - cron: '30 8 * * 1-5'
   workflow_dispatch:
 
@@ -18,7 +14,7 @@ permissions:
   id-token: write
 
 jobs:
-  run-hermes-gemini:
+  run-hermes:
     runs-on: ubuntu-latest
 
     steps:
@@ -41,16 +37,15 @@ jobs:
           pip install hermes-agent
           npx skills add HiThink-Tech/Financial-API --skill hithink-finance -g --yes
 
-      - name: 运行 Hermes (基于 Gemini 3.6 Flash 生成分析)
+      - name: 运行 Hermes (基于 Ling 3.0 Flash Fin 生成分析)
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           HITHINK_FINANCE_API_KEY: ${{ secrets.HITHINK_FINANCE_API_KEY }}
         run: |
           # 1. 获取当前 UTC 时间节点
           HOUR=$(date -u +%H)
           MINUTE=$(date -u +%M)
 
-          # 2. 根据时间类型触发不同 Prompt
+          # 2. 根据时间节点设置 Prompt
           if [ "$HOUR" "==" "03" ] && [ "$MINUTE" "==" "45" ]; then
             TYPE="noon"
             PROMPT="抓取午盘行情，评估综合/情绪/量比评分，撰写午盘深度点评，将结构化数据和点评更新至 data.json 中的 hourly_snapshots 和 reports.noon 节点。"
@@ -65,15 +60,8 @@ jobs:
             PROMPT="抓取当前整点行情，计算综合评分、情绪评分、量比评分并总结一句话点评，插入到 data.json 的 hourly_snapshots 数组中。"
           fi
 
-          # 3. 如果遭遇限流，最多重试 3 次，每次间隔 10 秒
-          n=0
-          until [ "$n" -ge 3 ]
-          do
-             hermes -m "gemini-3.6-flash" -z "$PROMPT" && break
-             n=$((n+1))
-             echo "遭遇 API 限流，等待 10 秒后重试 ($n/3)..."
-             sleep 10
-          done
+          # 3. 调用指定免费金融模型灵动 Ling 3.0 Flash Fin
+          hermes -m "inclusionai/ling-3.0-flash-fin:free" -z "$PROMPT"
 
       - name: 提交并推送 data.json 变更
         run: |
