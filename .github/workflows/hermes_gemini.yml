@@ -78,16 +78,25 @@ jobs:
 
           # 4. 执行 Agent 任务
           # hermes -m "z-ai/glm-5.2:free" -z "$PROMPT"
-          hermes -m "google/gemini-2.0-flash-exp:free" -z "$PROMPT"
+          hermes -m "openrouter/z-ai/glm-5.2:free" -z "$PROMPT" --config "model.context_length=65536"
 
       - name: 提交并推送数据变更 (包含历史归档)
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # 将 data.json 和 data/ 目录下的所有历史文件一起提交
-          git add data.json data/
+          # 1. 如果 data.json 不存在，创建一个初始空的
+          if [ ! -f "data.json" ]; then
+            echo '{"summary_scores":{"overall":"--","sentiment":"--","volume":"--"},"hourly_snapshots":[],"reports":{}}' > data.json
+          fi
+
+          # 2. 将变动文件加入暂存区
+          git add data.json data/ || true
+
+          # 3. 提交变更（若无变更则平滑跳过）
           git commit -m "auto: update market analysis data ($TYPE) [$(date '+%Y-%m-%d')]" || echo "No changes to commit"
+          
+          # 4. 推送到远程仓库
           git push
 
       - name: 部署至 GitHub Pages
