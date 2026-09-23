@@ -47,12 +47,10 @@ jobs:
       - name: 运行 Hermes (基于大模型生成盘面分析与点评)
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          # 3. 同时提供两种常见命名的同花顺 Key 环境变量，确保工具完美读取
           HITHINK_FINANCE_API_KEY: ${{ secrets.HITHINK_FINANCE_API_KEY }}
           FUYAO_TOKEN: ${{ secrets.HITHINK_FINANCE_API_KEY }}
           API_KEY: ${{ secrets.HITHINK_FINANCE_API_KEY }}
         run: |
-          # 强行指定北京时间
           export TZ="Asia/Shanghai"
           TODAY=$(date "+%Y-%m-%d")
           HOUR=$(date "+%H")
@@ -61,22 +59,30 @@ jobs:
           mkdir -p data
           echo "当前北京时间: $TODAY $HOUR:$MINUTE"
 
-          STRICT_REQUIREMENT="【必须执行】：请优先通过 hithink-finance 工具/API 查询今日（$TODAY）真实的 A 股大盘行情（三大指数点位与涨跌幅、涨跌家数、两市总成交额、主线领涨热点板块）。"
+          # 1. 强制数据真实性约束
+          STRICT_REQUIREMENT="【数据获取要求】：你必须优先通过 hithink-finance 技能/API 查询今日（$TODAY）真实的 A 股大盘行情（三大指数点位与涨跌幅、涨跌家数、两市总成交额、主线领涨热点板块）。"
 
-          ARCHIVE_INSTRUCTION="拿到真实行情数据后，请更新根目录的 data.json，并同步保存/更新一份完整数据到 data/$TODAY.json 中。JSON 结构必须严格包含：indices (sh_index, sh_change, sz_index, sz_change, cy_index, cy_change)、summary_scores、market_stats (up_count, down_count, total_volume)、hot_sectors、reports 和 hourly_snapshots 字段。"
+          # 2. 强规范化 output 规则 (解决英文输出、非数字评分、冗余调试文本问题)
+          OUTPUT_FORMAT_SPEC="【JSON 字段格式严格规范】：
+          1. 所有描述性文字（含评分、状态描述、点评等）必须使用纯中文，严禁出现英文单词（如 bearish, risk-off 等）。
+          2. summary_scores 中的 overall、sentiment、volume 必须输出 0~100 之间的纯数字评分（如 65、78、82），不要填写文字描述！
+          3. market_stats.status_desc 必须是一句简短的中文市场状态（如：'三大指数弱势震荡，成交量平稳'），严禁包含 API 调试/缺失说明等废话！
+          4. hourly_snapshots 中的指数数值必须为纯数字（如 13742.55），严禁带有 'approx' 或其他文本前缀！
+          5. hot_sectors 保持包含 name 和 chg_pct 的对象数组结构。
+          6. 更新根目录 data.json，并同步保存/更新完整的副本至 data/$TODAY.json 中。"
 
           if [ "$HOUR" -ge 11 ] && [ "$HOUR" -lt 14 ]; then
             TYPE="noon"
-            PROMPT="$STRICT_REQUIREMENT\n今天日期是 $TODAY。请抓取最新午盘行情，评估综合/情绪/量比评分，并撰写一段 150 字左右的午盘深度综合点评，更新至 data.json 中的 reports.noon 节点。$ARCHIVE_INSTRUCTION"
+            PROMPT="$STRICT_REQUIREMENT\n今天日期是 $TODAY。请抓取最新午盘行情，评估三大维度评分，并在 data.json 的 reports.noon 节点撰写一段 150 字左右的午盘深度综合点评。\n$OUTPUT_FORMAT_SPEC"
           elif [ "$HOUR" -eq 14 ] || [ "$HOUR" -eq 15 ]; then
             TYPE="close"
-            PROMPT="$STRICT_REQUIREMENT\n今天日期是 $TODAY。请抓取收盘行情全貌，更新全天评分指标，撰写一段 200 字左右的收盘深度点评，更新至 data.json 中的 reports.close 节点。$ARCHIVE_INSTRUCTION"
+            PROMPT="$STRICT_REQUIREMENT\n今天日期是 $TODAY。请抓取收盘行情全貌，评估全天三大维度评分，并在 data.json 的 reports.close 节点撰写一段 200 字左右的收盘深度点评。\n$OUTPUT_FORMAT_SPEC"
           else
             TYPE="review"
-            PROMPT="$STRICT_REQUIREMENT\n今天日期是 $TODAY。请抓取全天行情与板块轮动情况，撰写盘后复盘策略与后市展望（一段话），更新至 reports.review 节点。$ARCHIVE_INSTRUCTION"
+            PROMPT="$STRICT_REQUIREMENT\n今天日期是 $TODAY。请抓取全天行情与板块轮动情况，评估全天三大维度评分，并在 data.json 的 reports.review 节点撰写盘后复盘策略与后市展望（一段话）。\n$OUTPUT_FORMAT_SPEC"
           fi
 
-          # 4. 执行任务
+          # 3. 执行 Hermes
           hermes -m "openrouter/free" -z "$PROMPT"
 
       - name: 提交并推送数据变更 (包含历史归档)
