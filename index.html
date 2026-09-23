@@ -13,7 +13,7 @@
   <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
       <div class="flex items-center gap-3">
-        <i class="fa-solid me-2 fa-chart-line text-blue-400 text-2xl"></i>
+        <i class="fa-solid fa-chart-line text-blue-400 text-2xl"></i>
         <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">
           A股盘面AI智能诊断看板
         </h1>
@@ -32,7 +32,6 @@
         <button 
           id="reset-today-btn" 
           class="text-xs bg-blue-600/80 hover:bg-blue-600 text-white px-2 py-1 rounded transition"
-          title="切回今天最新"
         >
           今天
         </button>
@@ -48,45 +47,110 @@
       <span id="status-message" class="text-sm"></span>
     </div>
 
-    <!-- 顶部核心指标看板 -->
+    <!-- 1. 大盘主要指数实时展示区 -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-5 backdrop-blur">
-        <div class="text-slate-400 text-sm mb-1 flex justify-between">
-          <span>大盘综合评分</span>
-          <i class="fa-solid fa-gauge text-blue-400"></i>
+      <!-- 上证指数 -->
+      <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-4 backdrop-blur flex justify-between items-center">
+        <div>
+          <div class="text-xs text-slate-400">上证指数</div>
+          <div id="sh-index" class="text-2xl font-bold font-mono mt-1">--</div>
         </div>
-        <div id="score-overall" class="text-3xl font-extrabold text-blue-400">--</div>
+        <div id="sh-change" class="text-right font-mono font-semibold text-lg">--</div>
       </div>
-      <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-5 backdrop-blur">
-        <div class="text-slate-400 text-sm mb-1 flex justify-between">
-          <span>市场情绪指数</span>
-          <i class="fa-solid fa-fire text-amber-400"></i>
+      <!-- 深证成指 -->
+      <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-4 backdrop-blur flex justify-between items-center">
+        <div>
+          <div class="text-xs text-slate-400">深证成指</div>
+          <div id="sz-index" class="text-2xl font-bold font-mono mt-1">--</div>
         </div>
-        <div id="score-sentiment" class="text-3xl font-extrabold text-amber-400">--</div>
+        <div id="sz-change" class="text-right font-mono font-semibold text-lg">--</div>
       </div>
-      <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-5 backdrop-blur">
-        <div class="text-slate-400 text-sm mb-1 flex justify-between">
-          <span>成交量比评分</span>
-          <i class="fa-solid fa-chart-simple text-emerald-400"></i>
+      <!-- 创业板指 -->
+      <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-4 backdrop-blur flex justify-between items-center">
+        <div>
+          <div class="text-xs text-slate-400">创业板指</div>
+          <div id="cy-index" class="text-2xl font-bold font-mono mt-1">--</div>
         </div>
-        <div id="score-volume" class="text-3xl font-extrabold text-emerald-400">--</div>
+        <div id="cy-change" class="text-right font-mono font-semibold text-lg">--</div>
       </div>
     </section>
 
-    <!-- 深度报告 Tab 切换区 -->
+    <!-- 3. 核心指标与相关市场数据评分区 -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <!-- 综合评分 -->
+      <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-5 backdrop-blur flex flex-col justify-between">
+        <div>
+          <div class="text-slate-400 text-sm mb-1 flex justify-between">
+            <span>大盘综合评分</span>
+            <i class="fa-solid fa-gauge text-blue-400"></i>
+          </div>
+          <div id="score-overall" class="text-3xl font-extrabold text-blue-400">--</div>
+        </div>
+        <div class="mt-4 text-xs text-slate-400 border-t border-slate-700/50 pt-2 flex justify-between">
+          <span>市场拟合度:</span>
+          <span id="stat-market-fit" class="text-slate-200">--</span>
+        </div>
+      </div>
+
+      <!-- 情绪评分与涨跌家数 -->
+      <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-5 backdrop-blur flex flex-col justify-between">
+        <div>
+          <div class="text-slate-400 text-sm mb-1 flex justify-between">
+            <span>市场情绪指数</span>
+            <i class="fa-solid fa-fire text-amber-400"></i>
+          </div>
+          <div id="score-sentiment" class="text-3xl font-extrabold text-amber-400">--</div>
+        </div>
+        <div class="mt-4 text-xs text-slate-400 border-t border-slate-700/50 pt-2 flex justify-between">
+          <span>涨/跌家数:</span>
+          <span id="stat-up-down" class="text-slate-200">-- / --</span>
+        </div>
+      </div>
+
+      <!-- 量比评分与成交额 -->
+      <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-5 backdrop-blur flex flex-col justify-between">
+        <div>
+          <div class="text-slate-400 text-sm mb-1 flex justify-between">
+            <span>成交量比评分</span>
+            <i class="fa-solid fa-chart-simple text-emerald-400"></i>
+          </div>
+          <div id="score-volume" class="text-3xl font-extrabold text-emerald-400">--</div>
+        </div>
+        <div class="mt-4 text-xs text-slate-400 border-t border-slate-700/50 pt-2 flex justify-between">
+          <span>两市成交额:</span>
+          <span id="stat-total-volume" class="text-slate-200">-- 亿</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 深度点评（包含指数总结、当前热点、一段话深度点评） -->
     <section class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-6 backdrop-blur mb-6">
       <div class="border-b border-slate-700 mb-4 flex gap-4">
         <button class="tab-btn active border-b-2 border-blue-500 pb-2 font-medium text-blue-400" data-tab="noon">午盘点评</button>
         <button class="tab-btn border-b-2 border-transparent pb-2 font-medium text-slate-400 hover:text-slate-200" data-tab="close">收盘点评</button>
         <button class="tab-btn border-b-2 border-transparent pb-2 font-medium text-slate-400 hover:text-slate-200" data-tab="review">盘后复盘</button>
       </div>
+
+      <!-- 热点板块标签区 -->
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <span class="text-xs text-slate-400"><i class="fa-solid fa-fire-flame-curved text-red-400 mr-1"></i>当前热点板块:</span>
+        <div id="hot-sectors" class="flex flex-wrap gap-2">
+          <span class="text-xs bg-slate-700 text-slate-400 px-2.5 py-1 rounded-full">无热点数据</span>
+        </div>
+      </div>
       
-      <div id="report-content" class="text-slate-300 leading-relaxed min-h-[120px] whitespace-pre-line">
-        数据加载中...
+      <!-- 一段话深度综合点评 -->
+      <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50">
+        <h3 class="text-sm font-semibold text-slate-300 mb-2 flex items-center gap-1.5">
+          <i class="fa-solid fa-brain text-blue-400"></i> AI 深度综合点评
+        </h3>
+        <p id="report-summary-paragraph" class="text-slate-300 text-sm leading-relaxed whitespace-pre-line">
+          数据加载中...
+        </p>
       </div>
     </section>
 
-    <!-- 分时行情快照列表 -->
+    <!-- 盘中整点快照追踪 -->
     <section class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-6 backdrop-blur">
       <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-slate-200">
         <i class="fa-solid fa-clock text-slate-400"></i> 盘中整点快照追踪
@@ -96,10 +160,10 @@
           <thead class="bg-slate-700/50 text-slate-400 uppercase text-xs">
             <tr>
               <th class="p-3">时间</th>
-              <th class="p-3">综合评分</th>
-              <th class="p-3">情绪评分</th>
-              <th class="p-3">量比评分</th>
-              <th class="p-3">一句话点评</th>
+              <th class="p-3">综合/情绪/量比</th>
+              <th class="p-3">当前指数</th>
+              <th class="p-3">热点板块</th>
+              <th class="p-3">一段话综合点评</th>
             </tr>
           </thead>
           <tbody id="snapshots-table-body" class="divide-y divide-slate-700/50">
@@ -115,47 +179,38 @@
     let currentData = null;
     let activeTab = 'noon';
 
-    // 初始化页面：默认加载当前当天数据，并初始化日期选择器
     document.addEventListener('DOMContentLoaded', () => {
       const dateInput = document.getElementById('date-select');
       const todayStr = new Date().toISOString().split('T')[0];
-      dateInput.max = todayStr; // 禁止选择未来日期
+      dateInput.max = todayStr;
 
-      // 绑定事件
       dateInput.addEventListener('change', (e) => loadDataByDate(e.target.value));
       document.getElementById('reset-today-btn').addEventListener('click', () => {
         dateInput.value = '';
-        loadDataByDate(null); // 加载根目录 data.json (今天)
+        loadDataByDate(null);
       });
 
       setupTabs();
-      loadDataByDate(null); // 默认首次加载
+      loadDataByDate(null);
     });
 
-    // 核心数据加载函数
     async function loadDataByDate(selectedDate) {
       const banner = document.getElementById('status-banner');
       const msg = document.getElementById('status-message');
-      
-      // 决定请求路径
       const fetchUrl = selectedDate ? `data/${selectedDate}.json` : 'data.json';
 
       try {
-        const response = await fetch(`${fetchUrl}?t=${Date.now()}`); // 避免浏览器强缓存
-        
-        if (!response.ok) {
-          throw new Error(`无法获取该日期 (${selectedDate}) 的分析数据`);
-        }
+        const response = await fetch(`${fetchUrl}?t=${Date.now()}`);
+        if (!response.ok) throw new Error(`无法获取 ${selectedDate || '今天'} 的数据`);
 
         currentData = await response.json();
         
-        // 显示加载成功提示
         banner.className = 'mb-6 p-4 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 flex items-center justify-between';
         msg.textContent = `当前展示数据：${currentData.date || selectedDate || '今天'}`;
         banner.classList.remove('hidden');
 
-        // 渲染视图
-        renderOverview();
+        renderMarketIndices();
+        renderOverviewAndStats();
         renderReport();
         renderSnapshots();
 
@@ -164,31 +219,88 @@
         banner.className = 'mb-6 p-4 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-300 flex items-center justify-between';
         msg.textContent = `提示：${selectedDate ? selectedDate + ' 暂无归档数据' : '数据加载失败或尚未生成'}`;
         banner.classList.remove('hidden');
-
-        // 清空展示
         resetDisplay();
       }
     }
 
-    // 渲染评分大卡片
-    function renderOverview() {
+    // 1. 渲染大盘指数
+    function renderMarketIndices() {
+      if (!currentData || !currentData.indices) {
+        setIndexDisplay('sh', '--', '--');
+        setIndexDisplay('sz', '--', '--');
+        setIndexDisplay('cy', '--', '--');
+        return;
+      }
+      setIndexDisplay('sh', currentData.indices.sh_index, currentData.indices.sh_change);
+      setIndexDisplay('sz', currentData.indices.sz_index, currentData.indices.sz_change);
+      setIndexDisplay('cy', currentData.indices.cy_index, currentData.indices.cy_change);
+    }
+
+    function setIndexDisplay(prefix, val, change) {
+      const valEl = document.getElementById(`${prefix}-index`);
+      const changeEl = document.getElementById(`${prefix}-change`);
+      
+      valEl.textContent = val ?? '--';
+      if (change && change !== '--') {
+        const isUp = !change.startsWith('-');
+        changeEl.textContent = (isUp ? '+' : '') + change;
+        changeEl.className = `text-right font-mono font-semibold text-lg ${isUp ? 'text-red-400' : 'text-emerald-400'}`;
+        valEl.className = `text-2xl font-bold font-mono mt-1 ${isUp ? 'text-red-400' : 'text-emerald-400'}`;
+      } else {
+        changeEl.textContent = '--';
+        changeEl.className = 'text-right font-mono font-semibold text-lg text-slate-400';
+        valEl.className = 'text-2xl font-bold font-mono mt-1 text-slate-100';
+      }
+    }
+
+    // 3. 渲染评分与对应底层支撑数据
+    function renderOverviewAndStats() {
       if (!currentData) return;
       document.getElementById('score-overall').textContent = currentData.summary_scores?.overall ?? '--';
       document.getElementById('score-sentiment').textContent = currentData.summary_scores?.sentiment ?? '--';
       document.getElementById('score-volume').textContent = currentData.summary_scores?.volume ?? '--';
+
+      // 底层支撑数据
+      document.getElementById('stat-market-fit').textContent = currentData.market_stats?.status_desc ?? '正常';
+      document.getElementById('stat-up-down').textContent = 
+        `${currentData.market_stats?.up_count ?? '--'} 涨 / ${currentData.market_stats?.down_count ?? '--'} 跌`;
+      document.getElementById('stat-total-volume').textContent = 
+        currentData.market_stats?.total_volume ? `${currentData.market_stats.total_volume} 亿` : '--';
     }
 
-    // 渲染深度报告
+    // 2. 渲染深度点评（热点 + 一段话综合总结）
     function renderReport() {
-      const reportContainer = document.getElementById('report-content');
-      if (!currentData || !currentData.reports) {
-        reportContainer.textContent = '暂无深度报告内容';
+      const hotContainer = document.getElementById('hot-sectors');
+      const paragraphContainer = document.getElementById('report-summary-paragraph');
+
+      if (!currentData) {
+        hotContainer.innerHTML = '<span class="text-xs bg-slate-700 text-slate-400 px-2.5 py-1 rounded-full">无数据</span>';
+        paragraphContainer.textContent = '暂无点评数据';
         return;
       }
-      reportContainer.textContent = currentData.reports[activeTab] || '该节点报告尚未生成';
+
+      // 渲染当前热点板块标签
+      const sectors = currentData.hot_sectors || [];
+      if (sectors.length > 0) {
+        hotContainer.innerHTML = sectors.map(sec => 
+          `<span class="text-xs bg-red-500/20 text-red-300 border border-red-500/30 px-2.5 py-1 rounded-full font-medium">${sec}</span>`
+        ).join('');
+      } else {
+        hotContainer.innerHTML = '<span class="text-xs bg-slate-700 text-slate-400 px-2.5 py-1 rounded-full">轮动分化 / 无明确主线</span>';
+      }
+
+      // 渲染一段话深度综合点评
+      const reportObj = currentData.reports?.[activeTab];
+      if (typeof reportObj === 'string') {
+        paragraphContainer.textContent = reportObj;
+      } else if (reportObj?.paragraph) {
+        paragraphContainer.textContent = reportObj.paragraph;
+      } else {
+        paragraphContainer.textContent = '该时间节点的深度点评尚未生成。';
+      }
     }
 
-    // 渲染快照表格
+    // 渲染快照列表
     function renderSnapshots() {
       const tbody = document.getElementById('snapshots-table-body');
       tbody.innerHTML = '';
@@ -203,32 +315,39 @@
         tr.className = 'hover:bg-slate-700/30 transition';
         tr.innerHTML = `
           <td class="p-3 font-mono text-slate-300">${item.time || '--'}</td>
-          <td class="p-3 font-bold text-blue-400">${item.overall_score ?? '--'}</td>
-          <td class="p-3 font-bold text-amber-400">${item.sentiment_score ?? '--'}</td>
-          <td class="p-3 font-bold text-emerald-400">${item.volume_score ?? '--'}</td>
-          <td class="p-3 text-slate-300">${item.comment || '--'}</td>
+          <td class="p-3 font-mono">
+            <span class="text-blue-400">${item.overall_score ?? '-'}</span> / 
+            <span class="text-amber-400">${item.sentiment_score ?? '-'}</span> / 
+            <span class="text-emerald-400">${item.volume_score ?? '-'}</span>
+          </td>
+          <td class="p-3 font-mono text-slate-200">${item.sh_index_snapshot || '--'}</td>
+          <td class="p-3 text-xs text-red-300">${(item.hot_sectors || []).join(', ') || '无'}</td>
+          <td class="p-3 text-slate-300 leading-relaxed">${item.comment_paragraph || item.comment || '--'}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    // 重置展示内容
     function resetDisplay() {
+      setIndexDisplay('sh', '--', '--');
+      setIndexDisplay('sz', '--', '--');
+      setIndexDisplay('cy', '--', '--');
       document.getElementById('score-overall').textContent = '--';
       document.getElementById('score-sentiment').textContent = '--';
       document.getElementById('score-volume').textContent = '--';
-      document.getElementById('report-content').textContent = '无可读数据';
+      document.getElementById('stat-market-fit').textContent = '--';
+      document.getElementById('stat-up-down').textContent = '-- / --';
+      document.getElementById('stat-total-volume').textContent = '--';
+      document.getElementById('hot-sectors').innerHTML = '<span class="text-xs bg-slate-700 text-slate-400 px-2.5 py-1 rounded-full">无数据</span>';
+      document.getElementById('report-summary-paragraph').textContent = '无可读数据';
       document.getElementById('snapshots-table-body').innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">无数据</td></tr>`;
     }
 
-    // Tab 切换逻辑
     function setupTabs() {
       const tabs = document.querySelectorAll('.tab-btn');
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
-          tabs.forEach(t => {
-            t.className = 'tab-btn border-b-2 border-transparent pb-2 font-medium text-slate-400 hover:text-slate-200';
-          });
+          tabs.forEach(t => t.className = 'tab-btn border-b-2 border-transparent pb-2 font-medium text-slate-400 hover:text-slate-200');
           tab.className = 'tab-btn active border-b-2 border-blue-500 pb-2 font-medium text-blue-400';
           activeTab = tab.dataset.tab;
           renderReport();
