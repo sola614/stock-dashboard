@@ -1,4 +1,4 @@
-name: A股盘面AI智能诊断看板 (Ling 3.0 Flash Fin)
+name: A股盘面AI智能诊断看板
 
 on:
   schedule:
@@ -37,10 +37,10 @@ jobs:
           pip install hermes-agent
           npx skills add HiThink-Tech/Financial-API --skill hithink-finance -g --yes
 
-      - name: 运行 Hermes (基于 Ling 3.0 Flash Fin 生成分析)
+      - name: 运行 Hermes
         env:
-          # 传入 Hermes 官方 API Key / 凭证
-          HERMES_API_KEY: ${{ secrets.HERMES_API_KEY }}
+          # 传入 OpenRouter API Key
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           HITHINK_FINANCE_API_KEY: ${{ secrets.HITHINK_FINANCE_API_KEY }}
         run: |
           # 1. 获取当前 UTC 时间节点
@@ -62,8 +62,8 @@ jobs:
             PROMPT="抓取当前整点行情，计算综合评分、情绪评分、量比评分并总结一句话点评，插入到 data.json 的 hourly_snapshots 数组中。"
           fi
 
-          # 3. 直接调用官方模型的 ID
-          hermes -m "inclusionai/ling-3.0-flash-fin:free" -z "$PROMPT"
+          # 3. 通过 OpenRouter 调用免费模型
+          hermes -m "openrouter/z-ai/glm-5.2:free" -z "$PROMPT"
 
       - name: 提交并推送 data.json 变更
         run: |
