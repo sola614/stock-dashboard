@@ -77,8 +77,7 @@ jobs:
           fi
 
           # 4. 执行 Agent 任务
-          # hermes -m "z-ai/glm-5.2:free" -z "$PROMPT"
-          hermes -m "openrouter/z-ai/glm-5.2:free" -z "$PROMPT" --config "model.context_length=65536"
+          hermes -m "openrouter/free" -z "$PROMPT"
 
       - name: 提交并推送数据变更 (包含历史归档)
         run: |
