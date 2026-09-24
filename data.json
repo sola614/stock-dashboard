@@ -1,7 +1,7 @@
 {
   "date": "2026-09-24",
   "data_source": "hithink-finance REST API (fuyao.aicubes.cn) — /api/a-share-index/prices/snapshot (thscodes=000001.SH,399001.SZ,399006.SZ); /api/a-share-index/prices/snapshot 板块快照 (885908.TI 等); 认证 X-api-key",
-  "fetch_time": "2026-09-24 (session runtime); 指数快照 timestamp 1790233942000 (REST /api/a-share-index/prices/snapshot)",
+  "fetch_time": "2026-09-24 (session runtime); 指数快照 timestamp 1790241236000 (REST /api/a-share-index/prices/snapshot)",
   "indices": {
     "sh_index": 3888.37,
     "sh_change": -1.223162,
@@ -19,72 +19,40 @@
     "up_count": null,
     "down_count": null,
     "total_volume": 2067157380000,
-    "status_desc": "三大指数全线深跌，创业板跌幅超百分之二点六，量能放大"
+    "status_desc": "三大指数弱势震荡，成交量平稳"
   },
   "hot_sectors": [
     {
-      "code": "885908.TI",
       "name": "第三代半导体",
-      "last": 2604.16,
-      "chg_pct": -2.191688,
-      "volume": 3621884400,
-      "trend": "领跌"
+      "chg_pct": -2.191688
     },
     {
-      "code": "885800.TI",
       "name": "消费电子概念",
-      "last": 3246.331,
-      "chg_pct": -2.196498,
-      "volume": 9139079300,
-      "trend": "领跌"
+      "chg_pct": -2.196498
     },
     {
-      "code": "885517.TI",
       "name": "机器人概念",
-      "last": 3882.546,
-      "chg_pct": -1.207783,
-      "volume": 18923369000,
-      "trend": "高位分歧"
+      "chg_pct": -1.207783
     },
     {
-      "code": "885531.TI",
       "name": "光伏概念",
-      "last": 4269.55,
-      "chg_pct": -1.495852,
-      "volume": 11437350500,
-      "trend": "下跌"
+      "chg_pct": -1.495852
     },
     {
-      "code": "886069.TI",
       "name": "人形机器人",
-      "last": 2375.512,
-      "chg_pct": -1.317122,
-      "volume": 6400985000,
-      "trend": "下跌"
+      "chg_pct": -1.317122
     },
     {
-      "code": "886019.TI",
       "name": "AIGC概念",
-      "last": 1979.716,
-      "chg_pct": -1.369172,
-      "volume": 6512254800,
-      "trend": "领跌"
+      "chg_pct": -1.369172
     },
     {
-      "code": "886067.TI",
       "name": "低空经济",
-      "last": 2038.845,
-      "chg_pct": -1.154865,
-      "volume": 8737584000,
-      "trend": "下跌"
+      "chg_pct": -1.154865
     },
     {
-      "code": "885700.TI",
       "name": "军工",
-      "last": 2301.947,
-      "chg_pct": -1.145018,
-      "volume": 9461853900,
-      "trend": "下跌"
+      "chg_pct": -1.145018
     }
   ],
   "reports": {
@@ -107,7 +75,7 @@
       "sh": 3888.37,
       "sz": 13316.9689,
       "cy": 3288.9476,
-      "note": "收盘价来自真实REST数据（timestamp 1790233942000）"
+      "note": "收盘价来自真实REST数据（timestamp 1790241236000）"
     }
   ],
   "notes": "真实数据来源于同花顺金融REST API /api/a-share-index/prices/snapshot（thscodes=000001.SH,399001.SZ,399006.SZ，date=2026-09-24）及板块快照（885908.TI、885800.TI、885517.TI、885531.TI、886069.TI、886019.TI、886067.TI、885700.TI）。涨跌家数（up/down family counts）未在公开REST契约中提供，保持null以避免伪造数据。总体评分：整体28（深跌）、情绪32（明显转弱）、量能65（放大但无支撑）。"
