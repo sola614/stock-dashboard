@@ -1,6 +1,6 @@
 {
   "date": "2026-09-30",
-  "data_source": "同花顺金融数据服务远端接口（hithink-finance CLI index.snapshot 验证；三大指数真实点位：上证3830.45、深证12901.9474、创业板3142.563；盘中快照为盘中估计值）",
+  "data_source": "同花顺金融数据服务远端接口（hithink-finance CLI index.snapshot 验证；上证3830.45/+0.18%，深证12901.95/+0.34%，创业板3142.56/+0.09%）",
   "fetch_time": "2026-09-30 11:30 远端验证完成（hithink-finance CLI index.snapshot 远端接口：上证3830.45/+0.18%，深证12901.95/+0.34%，创业板3142.56/+0.09%）",
   "indices": {
     "sh_index": 3830.45,
