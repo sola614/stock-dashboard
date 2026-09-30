@@ -4,11 +4,11 @@
   "fetch_time": "2026-09-30 16:00 收盘验证完成",
   "indices": {
     "sh_index": 3842.19,
-    "sh_change": 0.0031,
-    "sz_index": 12887.62,
-    "sz_change": -0.0011,
-    "cy_index": 3135.28,
-    "cy_change": -0.0023
+    "sh_change": 0.00306491,
+    "sz_index": 12887.6198,
+    "sz_change": -0.0011105,
+    "cy_index": 3135.2767,
+    "cy_change": -0.00231859
   },
   "summary_scores": {
     "overall": 52,
