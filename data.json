@@ -1,7 +1,7 @@
 {
   "date": "2026-09-30",
-  "data_source": "同花顺金融数据服务远端接口（hithink-finance CLI index.snapshot 实时验证，2026-09-30 收盘）",
-  "fetch_time": "2026-09-30 15:00 收盘验证完成",
+  "data_source": "同花顺金融数据服务远端接口（hithink-finance CLI index.snapshot 实时验证，2026-09-30 收盘；000001.SH=3842.19/+0.31%，399001.SZ=12887.62/-0.11%，399006.SZ=3135.28/-0.23%）",
+  "fetch_time": "2026-09-30 16:02 收盘验证完成",
   "indices": {
     "sh_index": 3840.83,
     "sh_change": 0.0027,
