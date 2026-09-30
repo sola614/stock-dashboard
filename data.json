@@ -4,11 +4,11 @@
   "fetch_time": "2026-10-01 11:30 远端验证完成（hithink-finance CLI index.snapshot 实时抓取；三大指数真实点位已验证）",
   "indices": {
     "sh_index": 3842.19,
-    "sh_change": 0.00306491,
+    "sh_change": 0.306491,
     "sz_index": 12887.6198,
-    "sz_change": -0.0011105,
+    "sz_change": -0.11105,
     "cy_index": 3135.2767,
-    "cy_change": -0.00231859
+    "cy_change": -0.231859
   },
   "summary_scores": {
     "overall": 52,
@@ -26,8 +26,8 @@
       "time": "2026-10-01 09:30",
       "label": "开盘",
       "sh": 3839.25,
-      "sz": 12958.08,
-      "cy": 3164.7
+      "sz": 12958.0848,
+      "cy": 3164.702
     },
     {
       "time": "2026-10-01 11:30",
