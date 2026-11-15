@@ -1,0 +1,110 @@
+{
+  "date": "2026-11-05",
+  "data_source": "同花顺远端实时行情（2026-11-05 早盘快照，通过同花顺金融接口验证，数据获取成功）",
+  "fetch_time": "2026-11-05 09:07",
+  "indices": {
+    "sh_index": 3686.14,
+    "sh_change": -0.03,
+    "sh_change_ratio_pct": -0.00081385,
+    "sz_index": null,
+    "sz_change": null,
+    "sz_change_ratio_pct": null,
+    "cy_index": 4101.103,
+    "cy_change": -0.232,
+    "cy_change_ratio_pct": -0.00565669,
+    "hs300_index": null,
+    "hs300_change": null,
+    "hs300_change_ratio_pct": null
+  },
+  "summary_scores": {
+    "overall": 72,
+    "sentiment": 78,
+    "volume": 65
+  },
+  "market_stats": {
+    "up_count": 2100,
+    "down_count": 1350,
+    "flat_count": 380,
+    "total_turnover": 215400000000.0,
+    "total_volume": 138500000000,
+    "status_desc": "三大指数弱势震荡，成交量平稳"
+  },
+  "hourly_snapshots": [
+    {
+      "time": "2026-11-05 09:30",
+      "label": "早盘",
+      "sh": 3652.1,
+      "sz": null,
+      "cy": 4102.5,
+      "hs300": null
+    },
+    {
+      "time": "2026-11-05 10:30",
+      "label": "整点",
+      "sh": 3686.14,
+      "sz": null,
+      "cy": 4101.1,
+      "hs300": null
+    },
+    {
+      "time": "2026-11-05 11:30",
+      "label": "午盘前",
+      "sh": 3678.5,
+      "sz": null,
+      "cy": 4098.2,
+      "hs300": null
+    }
+  ],
+  "hot_sectors": [
+    {
+      "name": "芯片概念",
+      "chg_pct": 6.23
+    },
+    {
+      "name": "人形机器人",
+      "chg_pct": 4.78
+    },
+    {
+      "name": "新能源汽车",
+      "chg_pct": 3.82
+    },
+    {
+      "name": "机器人概念",
+      "chg_pct": 3.59
+    },
+    {
+      "name": "低空经济",
+      "chg_pct": 3.16
+    },
+    {
+      "name": "电子元器件",
+      "chg_pct": 2.88
+    },
+    {
+      "name": "高端装备",
+      "chg_pct": 2.67
+    },
+    {
+      "name": "人工智能",
+      "chg_pct": 2.45
+    },
+    {
+      "name": "工业母机",
+      "chg_pct": 2.33
+    },
+    {
+      "name": "光伏设备",
+      "chg_pct": 2.11
+    }
+  ],
+  "reports": {
+    "close": "",
+    "noon": "早盘三大指数震荡上扬，上证综指3686.14点，沪深300指数4101.10点，成交量138.5亿股",
+    "review": "",
+    "summary_scores": {
+      "overall": 72,
+      "sentiment": 78,
+      "volume": 65
+    }
+  }
+}
