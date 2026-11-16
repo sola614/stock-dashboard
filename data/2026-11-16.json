@@ -1,72 +1,72 @@
 {
-  "timestamp": 1794792653000,
+  "timestamp": 1794794555000,
   "report_date": "2026-11-16",
   "summary_scores": {
-    "overall": 40,
-    "sentiment": 32,
-    "volume": 42
+    "overall": 33,
+    "sentiment": 35,
+    "volume": 53
   },
   "market_stats": {
     "total_market_cap": 185234567890000,
     "market_status": "偏空",
-    "status_desc": "三大指数全线低开，两市跌多涨少",
-    "market_cap_change": -0.88
+    "status_desc": "三大指数全线低开低走，两市跌多涨少，创业板指跌幅居前",
+    "market_cap_change": -0.95
   },
   "hourly_snapshots": [
     {
-      "time": "09:30",
-      "shanghai": 3602.49,
-      "shenzhen": 10847.18,
-      "chi_next": 2386.31,
+      "time": "10:06",
+      "shanghai": 3599.88,
+      "shenzhen": 10757.25,
+      "chi_next": 2354.79,
       "market_cap": 185234567890000,
-      "volume": 2531796228,
-      "trade_value": 36305543035,
-      "rise_count": 843,
-      "fall_count": 4413,
-      "unchanged_count": 304
+      "volume": 35197972161,
+      "trade_value": 532147767096.63,
+      "rise_count": 1024,
+      "fall_count": 4384,
+      "unchanged_count": 164
     }
   ],
   "reports": {
-    "noon": "早盘动态：今日开盘后三大指数全线低开，上证综指报 3602.49 点，跌 0.88%；深证成指报 10847.18 点，跌 1.11%；创业板指报 2386.31 点，跌 1.64%；沪深300 指数报 3979.24 点，跌 0.92%。两市合计成交约 363 亿元，上涨 843 家，下跌 4413 家，平盘 304 家，跌多涨少，市场情绪偏弱。概念板块方面仅猪肉、芬太尼、手机游戏等少数板块微涨，其余板块普遍回调。开盘初期抛压集中释放，午后需关注指数能否企稳修复以及成交额是否持续放大。"
+    "noon": "早盘动态：今日开盘后三大指数全线低开低走，上证综指报3599.88点，跌0.95%；深证成指报10757.25点，跌1.93%；创业板指报2354.79点，跌2.94%；沪深300指数报3973.75点，跌1.06%。两市合计成交约5321亿元，上涨1024家，下跌4384家，平盘164家，跌多涨少，市场情绪偏弱。概念板块方面仅证金持股、芬太尼、高股息精选等少数板块微涨，存储芯片、光刻机、富士康概念等科技板块跌幅居前。开盘后抛压持续释放，午后需关注指数能否企稳修复以及成交额是否持续放大。"
   },
   "index_performance": {
     "shanghai": {
-      "change": -31.86,
-      "change_percent": -0.88
+      "change": -34.47,
+      "change_percent": -0.95
     },
     "shenzhen": {
-      "change": -121.61,
-      "change_percent": -1.11
+      "change": -211.54,
+      "change_percent": -1.93
     },
     "chi_next": {
-      "change": -39.77,
-      "change_percent": -1.64
+      "change": -71.3,
+      "change_percent": -2.94
     },
     "shsz_ratio": {
       "ratio": 0.33,
-      "change": -0.45
+      "change": 0.98
     }
   },
   "hot_sectors": [
     {
-      "name": "猪肉",
-      "chg_pct": 0.16
+      "name": "证金持股",
+      "chg_pct": 0.51
     },
     {
       "name": "芬太尼",
-      "chg_pct": 0.15
+      "chg_pct": 0.51
     },
     {
-      "name": "手机游戏",
-      "chg_pct": 0.1
+      "name": "高股息精选",
+      "chg_pct": 0.47
     },
     {
-      "name": "赛马概念",
-      "chg_pct": -0.05
+      "name": "冰雪产业",
+      "chg_pct": 0.28
     },
     {
-      "name": "网络游戏",
-      "chg_pct": -0.06
+      "name": "免税店",
+      "chg_pct": 0.17
     }
   ],
   "foreign_capital": {
