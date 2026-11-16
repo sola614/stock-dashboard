@@ -1,89 +1,77 @@
 {
-  "timestamp": 1794787420000,
+  "timestamp": 1794792653000,
   "report_date": "2026-11-16",
   "summary_scores": {
-    "overall": 58,
-    "sentiment": 62,
-    "volume": 45
+    "overall": 40,
+    "sentiment": 32,
+    "volume": 42
   },
   "market_stats": {
     "total_market_cap": 185234567890000,
-    "market_status": "neutral",
-    "status_desc": "三大指数弱势震荡，成交量平稳",
-    "market_cap_change": 0.35
+    "market_status": "偏空",
+    "status_desc": "三大指数全线低开，两市跌多涨少",
+    "market_cap_change": -0.88
   },
   "hourly_snapshots": [
     {
       "time": "09:30",
-      "shanghai": 3642.15,
-      "shenzhen": 11245.68,
-      "chi_next": 2458.92,
-      "market_cap": 128934567890000,
-      "volume": 352432100000,
-      "trade_value": 28762345600000,
-      "rise_count": 245,
-      "fall_count": 568,
-      "unchanged_count": 102
-    },
-    {
-      "time": "10:30",
-      "shanghai": 3638.45,
-      "shenzhen": 11258.32,
-      "chi_next": 2455.11,
-      "market_cap": 129112345678900,
-      "volume": 365432100000,
-      "trade_value": 29876543210000,
-      "rise_count": 234,
-      "fall_count": 582,
-      "unchanged_count": 98
-    },
-    {
-      "time": "11:30",
-      "shanghai": 3634.35,
-      "shenzhen": 11247.89,
-      "chi_next": 2451.45,
-      "market_cap": 129287654321000,
-      "volume": 352145678900,
-      "trade_value": 30145678902300,
-      "rise_count": 218,
-      "fall_count": 613,
-      "unchanged_count": 107
+      "shanghai": 3602.49,
+      "shenzhen": 10847.18,
+      "chi_next": 2386.31,
+      "market_cap": 185234567890000,
+      "volume": 2531796228,
+      "trade_value": 36305543035,
+      "rise_count": 843,
+      "fall_count": 4413,
+      "unchanged_count": 304
     }
   ],
   "reports": {
-    "noon": "早盘市场弱势震荡，三大指数普遍下行。上证指数弱势调整，跌幅0.5%。深证成指承压调整，跌幅0.8%。两市成交额6800亿元，较昨日略有增加。板块方面，科技股表现相对抗跌，科技成长和低估值蓝筹板块资金流入较多。市场情绪偏谨慎，投资者需重点关注政策面和企业业绩披露。"
+    "noon": "早盘动态：今日开盘后三大指数全线低开，上证综指报 3602.49 点，跌 0.88%；深证成指报 10847.18 点，跌 1.11%；创业板指报 2386.31 点，跌 1.64%；沪深300 指数报 3979.24 点，跌 0.92%。两市合计成交约 363 亿元，上涨 843 家，下跌 4413 家，平盘 304 家，跌多涨少，市场情绪偏弱。概念板块方面仅猪肉、芬太尼、手机游戏等少数板块微涨，其余板块普遍回调。开盘初期抛压集中释放，午后需关注指数能否企稳修复以及成交额是否持续放大。"
   },
   "index_performance": {
-    "shanghai": {"change": -0.52, "change_percent": -0.55},
-    "shenzhen": {"change": -2.15, "change_percent": -1.87},
-    "chi_next": {"change": -1.23, "change_percent": -1.44},
-    "shsz_ratio": {"ratio": 0.78, "change": 0.02}
+    "shanghai": {
+      "change": -31.86,
+      "change_percent": -0.88
+    },
+    "shenzhen": {
+      "change": -121.61,
+      "change_percent": -1.11
+    },
+    "chi_next": {
+      "change": -39.77,
+      "change_percent": -1.64
+    },
+    "shsz_ratio": {
+      "ratio": 0.33,
+      "change": -0.45
+    }
   },
   "hot_sectors": [
     {
-      "name": "科技成长",
-      "chg_pct": 2.34
+      "name": "猪肉",
+      "chg_pct": 0.16
     },
     {
-      "name": "低估值蓝筹",
-      "chg_pct": 1.87
+      "name": "芬太尼",
+      "chg_pct": 0.15
     },
     {
-      "name": "消费电子",
-      "chg_pct": 1.45
+      "name": "手机游戏",
+      "chg_pct": 0.1
     },
     {
-      "name": "新能源",
-      "chg_pct": 0.98
+      "name": "赛马概念",
+      "chg_pct": -0.05
     },
     {
-      "name": "医药生物",
-      "chg_pct": 0.87
+      "name": "网络游戏",
+      "chg_pct": -0.06
     }
   ],
   "foreign_capital": {
     "net_inflow": 12345678900,
     "proportion": 0.12,
-    "trend": "inflow"
+    "trend": "流出"
   }
 }
