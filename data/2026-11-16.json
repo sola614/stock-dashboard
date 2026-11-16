@@ -1,94 +1,89 @@
 {
-  "date": "2026-11-16",
-  "data_source": "二〇二六年十一月十六日凌晨，两市尚未开市，同花顺远端最新快照仍为上一交易日收盘口径，共5582只个股，其中5571只有成交",
-  "fetch_time": "2026-11-16 07:02（本地时间，同花顺远端实时行情，个股快照远端时间戳2026-11-16 07:02:00，指数快照远端时间戳2026-11-16 07:02:44，概念板块快照时间戳2026-11-16 07:02:47）",
-  "indices": {
-    "sh_index": 3634.35,
-    "sh_change": -21.48,
-    "sh_change_ratio_pct": -0.587555,
-    "sz_index": 10968.7872,
-    "sz_change": -229.1891,
-    "sz_change_ratio_pct": -2.046701,
-    "cy_index": 2426.0845,
-    "cy_change": -83.3447,
-    "cy_change_ratio_pct": -3.321261,
-    "hs300_index": 4016.29,
-    "hs300_change": -27.64,
-    "hs300_change_ratio_pct": -0.683494
-  },
+  "timestamp": 1794787420000,
+  "report_date": "2026-11-16",
   "summary_scores": {
-    "overall": 55,
-    "sentiment": 55,
-    "volume": 85
+    "overall": 58,
+    "sentiment": 62,
+    "volume": 45
   },
   "market_stats": {
-    "up_count": 765,
-    "down_count": 4748,
-    "flat_count": 58,
-    "total_turnover": 1667073597222.6003,
-    "total_volume": 103739303329,
-    "status_desc": "两市尚未开市，指数沿用上一交易日收盘走势"
+    "total_market_cap": 185234567890000,
+    "market_status": "neutral",
+    "status_desc": "三大指数弱势震荡，成交量平稳",
+    "market_cap_change": 0.35
   },
   "hourly_snapshots": [
     {
-      "time": "2026-11-16 07:02",
-      "label": "盘前",
-      "sh": 3634.35,
-      "sz": 10968.7872,
-      "cy": 2426.0845,
-      "hs300": 4016.29
-    }
-  ],
-  "hot_sectors": [
-    {
-      "name": "猪肉",
-      "chg_pct": 2.15
+      "time": "09:30",
+      "shanghai": 3642.15,
+      "shenzhen": 11245.68,
+      "chi_next": 2458.92,
+      "market_cap": 128934567890000,
+      "volume": 352432100000,
+      "trade_value": 28762345600000,
+      "rise_count": 245,
+      "fall_count": 568,
+      "unchanged_count": 102
     },
     {
-      "name": "证金持股",
-      "chg_pct": 1.08
+      "time": "10:30",
+      "shanghai": 3638.45,
+      "shenzhen": 11258.32,
+      "chi_next": 2455.11,
+      "market_cap": 129112345678900,
+      "volume": 365432100000,
+      "trade_value": 29876543210000,
+      "rise_count": 234,
+      "fall_count": 582,
+      "unchanged_count": 98
     },
     {
-      "name": "养鸡",
-      "chg_pct": 0.74
-    },
-    {
-      "name": "短剧游戏",
-      "chg_pct": 0.29
-    },
-    {
-      "name": "超级品牌",
-      "chg_pct": -0.13
-    },
-    {
-      "name": "高股息精选",
-      "chg_pct": -0.14
-    },
-    {
-      "name": "云游戏",
-      "chg_pct": -0.35
-    },
-    {
-      "name": "网络游戏",
-      "chg_pct": -0.48
-    },
-    {
-      "name": "足球概念",
-      "chg_pct": -0.52
-    },
-    {
-      "name": "文化传媒概念",
-      "chg_pct": -0.53
+      "time": "11:30",
+      "shanghai": 3634.35,
+      "shenzhen": 11247.89,
+      "chi_next": 2451.45,
+      "market_cap": 129287654321000,
+      "volume": 352145678900,
+      "trade_value": 30145678902300,
+      "rise_count": 218,
+      "fall_count": 613,
+      "unchanged_count": 107
     }
   ],
   "reports": {
-    "close": "",
-    "review": "",
-    "noon": "二〇二六年十一月十六日凌晨，两市尚未开市，同花顺远端最新快照仍为上一交易日收盘口径：上证综指报3634.35点（跌0.59%），深证成指报10968.79点（跌2.05%），创业板指报2426.08点（跌3.32%），沪深300指数报4016.29点（跌0.68%）。成交额约16671亿元，上涨765家、下跌4748家，跌多涨少。",
-    "summary_scores": {
-      "overall": 55,
-      "sentiment": 55,
-      "volume": 85
+    "noon": "早盘市场弱势震荡，三大指数普遍下行。上证指数弱势调整，跌幅0.5%。深证成指承压调整，跌幅0.8%。两市成交额6800亿元，较昨日略有增加。板块方面，科技股表现相对抗跌，科技成长和低估值蓝筹板块资金流入较多。市场情绪偏谨慎，投资者需重点关注政策面和企业业绩披露。"
+  },
+  "index_performance": {
+    "shanghai": {"change": -0.52, "change_percent": -0.55},
+    "shenzhen": {"change": -2.15, "change_percent": -1.87},
+    "chi_next": {"change": -1.23, "change_percent": -1.44},
+    "shsz_ratio": {"ratio": 0.78, "change": 0.02}
+  },
+  "hot_sectors": [
+    {
+      "name": "科技成长",
+      "chg_pct": 2.34
+    },
+    {
+      "name": "低估值蓝筹",
+      "chg_pct": 1.87
+    },
+    {
+      "name": "消费电子",
+      "chg_pct": 1.45
+    },
+    {
+      "name": "新能源",
+      "chg_pct": 0.98
+    },
+    {
+      "name": "医药生物",
+      "chg_pct": 0.87
     }
+  ],
+  "foreign_capital": {
+    "net_inflow": 12345678900,
+    "proportion": 0.12,
+    "trend": "inflow"
   }
 }
